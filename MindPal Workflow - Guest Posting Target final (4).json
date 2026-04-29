@@ -1,0 +1,94 @@
+{
+  "title": "Guest Posting Target final",
+  "category": [],
+  "Nodes": [
+    {
+      "id": "69b90adf95e71f7507b9fd7b",
+      "label": "Prospect Submission",
+      "type": "HUMAN_INPUT",
+      "AgentNode": null,
+      "HumanInputNode": {
+        "id": "69b90ae095e71f7507b9fd7c",
+        "Fields": [
+          {
+            "id": "69b90ae195e71f7507b9fd83",
+            "label": "Website URL",
+            "type": "TEXT",
+            "required": true,
+            "order": 0,
+            "config": {
+              "maxUrlCount": 100,
+              "description": "Enter domains or URLs (https:// will be added automatically)",
+              "placeholder": "example.com or https://example.com"
+            }
+          }
+        ]
+      },
+      "LoopNode": null,
+      "RouterNode": null,
+      "OrchestratorWorkerNode": null,
+      "EvaluatorOptimizerNode": null,
+      "GateNode": null,
+      "ChatNode": null,
+      "ArtifactNode": null,
+      "InfoNode": null,
+      "StickyNoteNode": null
+    },
+    {
+      "id": "69b90ae095e71f7507b9fd7d",
+      "label": "Duplicate Checker",
+      "type": "AGENT",
+      "AgentNode": {
+        "id": "69b90ae095e71f7507b9fd7e",
+        "prompt": "### TASK: Search LRG sheets with AGGRESSIVE domain matching \n\n### INPUT\nYou receive website URLs from:\n@[Prospect Submission - Website URL](type=WORKFLOW_HUMAN_INPUT_FIELD&workflowHumanInputFieldId=69b90ae195e71f7507b9fd83)\n\n### STEP 1: NORMALIZE EACH URL\nFor each URL provided, clean it:\n1. Remove https://, http://, ftp:// protocols\n2. Remove www. prefix\n3. Remove trailing slashes and paths\n4. Extract ONLY the domain\n5. Lowercase everything\n\nExample: https://www.example.com/page → example.com\n\n### STEP 2: GENERATE SEARCH VARIATIONS\nFor EACH normalized domain, generate these search variations:\n- Exact domain (e.g., example.com)\n- With www prefix (e.g., www.example.com)\n- With http:// (e.g., http://example.com)\n- With https:// (e.g., https://example.com)\n- With http:// + www (e.g., http://www.example.com)\n- With https:// + www (e.g., https://www.example.com)\n- With trailing slash (e.g., example.com/)\n- Partial domain matches (e.g., if domain is example.co.uk, also search for \"example.co.uk\", \"example.uk\", \"co.uk\")\n- Subdomain variations\n- Any partial string of the domain\n\n### STEP 3: SEARCH BOTH LRG SHEETS - EXHAUSTIVELY\nYou MUST search these knowledge sources:\n1. @[LRG - Link Building Master Sheet (All B2C Brands).xlsx](type=KNOWLEDGE_SOURCE_TREE_NODE&knowledgeSourceTreeNodeId=6981a2d511478af74c9caa70)\n2. @[LRG Master Outreach [Internal].xlsx](type=KNOWLEDGE_SOURCE_TREE_NODE&knowledgeSourceTreeNodeId=6996e5b306db055c36489fad)\n3. @[Link building for Starberry Projects - Master sheet1.xlsx](type=KNOWLEDGE_SOURCE_TREE_NODE&knowledgeSourceTreeNodeId=69a539b246f2d56945eb5bb8) \n\nFor EACH variation, search:\n- \"Domain\" column\n- \"URL\" column  \n- \"Published URL\" column\n- Any column that might contain URLs/domains\n- Search is case-insensitive\n- Try PARTIAL matches (e.g., if searching for \"example.com\", find \"http://example.com\", \"www.example.com/page\", etc.)\n- Look for rows where the domain appears ANYWHERE in URL-type columns\n\n### STEP 4: IF DOMAIN IS FOUND IN EITHER LRG SHEET\nWhen you find a match, EXTRACT EVERY COLUMN from that entire row:\n- Domain/URL field\n- Brand (REQUIRED)\n- AS (Authority Score)\n- Total Traffic (monthly number)\n- UK Traffic (monthly number)\n- Traffic By Country (geographic region or source)\n- 6-12 Month Trend (growth/stable/decline)\n- Organic Traffic (monthly number)\n- Last Post Date\n- Niche/Category\n- Agent Details\n- Budget info\n- Outreach status\n- Any other columns present in the sheet\n\nReturn ALL extracted data.\n\n### STEP 5: OUTPUT FORMAT \n\n**IF DUPLICATE FOUND:**\nReturn in this exact format:\n\nDUPLICATE_FOUND\nURL: [original URL provided]\nDomain: [normalized domain]\nBrand: [extracted from LRG]\nAS: [extracted from LRG]\nTotal Traffic: [extracted from LRG]\nUK Traffic: [extracted from LRG]\nPrimary Traffic Source: [extracted from LRG]\n6-12 Month Trend: [extracted from LRG]\nOrganic Traffic: [extracted from LRG]\nLast Post Date: [extracted from LRG]\nNiche: [extracted from LRG]\nAgent Details: [extracted from LRG]\nStatus: DUPLICATE\nAction: Use LRG data for current metrics\n\n**IF NOT FOUND AFTER EXHAUSTIVE SEARCH:**\nReturn in this format:\n\nNOT_FOUND\nURL: [original URL provided]\nDomain: [normalized domain]\nStatus: NEW\nAction: Fetch from @[Link building for Starberry Projects - Master sheet1.xlsx](type=KNOWLEDGE_SOURCE_TREE_NODE&knowledgeSourceTreeNodeId=69a539b246f2d56945eb5bb8) \n\n### CRITICAL REMINDERS - MUST DO ALL\n- Generate ALL 10+ search variations before concluding \"not found\"\n- Search BOTH sheets exhaustively\n- Try partial/substring matches\n- Search is case-insensitive\n- Look in ALL URL-type columns (Domain, URL, Published URL, Website, Site, etc.)\n- Do NOT stop early - exhaust all variations\n- Extract ALL columns when duplicate found\n\n### SEARCH EXAMPLES\nIf looking for: example.com\nSearch for: example.com, www.example.com, http://example.com, https://example.com, http://www.example.com, https://www.example.com, example.com/, example, .com\n\nIf looking for: subdomain.example.co.uk\nSearch for: subdomain.example.co.uk, www.subdomain.example.co.uk, example.co.uk, example.uk, subdomain, co.uk, subdomain.example",
+        "Agent": {
+          "title": "SEO Research Specialist",
+          "system": "<background_information>You are an expert SEO data analyst specialized in semantic keyword mapping, search intent analysis, and competitive market research. You excel at finding the 'hidden' context that makes content rank.</background_information><instructions>Analyze the provided anchor text and URL to generate a comprehensive SEO background report. You must include: 1. A list of 10 LSI keywords. 2. A summary of current market trends for this niche. 3. Local search context and cultural nuances. 4. Primary search intent (Informational, Transactional, etc.).</instructions><response_framework>1. Start with a Search Intent Profile. 2. List the Semantic Keyword Cloud. 3. Detail the Market Data & Trends. 4. Outline Local/Contextual nuances.</response_framework><guidelines>Ensure the data is actionable for a writer. Focus on high-relevance terms over high-volume vanity keywords.</guidelines>",
+          "outputFormat": null
+        }
+      },
+      "HumanInputNode": null,
+      "LoopNode": null,
+      "RouterNode": null,
+      "OrchestratorWorkerNode": null,
+      "EvaluatorOptimizerNode": null,
+      "GateNode": null,
+      "ChatNode": null,
+      "ArtifactNode": null,
+      "InfoNode": null,
+      "StickyNoteNode": null
+    },
+    {
+      "id": "69b90ae095e71f7507b9fd80",
+      "label": "SEO Prospect Screener",
+      "type": "AGENT",
+      "AgentNode": {
+        "id": "69b90ae095e71f7507b9fd81",
+        "prompt": "### ROLE\nYou are an SEO Metrics and Domain Quality Specialist. Your goal is to screen website domains based on specific metrics.\n\n### INPUT\nWebsite URL(s) from: @[Prospect Submission - Website URL](type=WORKFLOW_HUMAN_INPUT_FIELD&workflowHumanInputFieldId=69b90ae195e71f7507b9fd83)\n\n### STEP 1: FETCH METRICS from @[semrush](type=MCP&mcpServerId=69a838bcad273ac07ba45052) \nUse the following tools to gather data for each URL: @[semrush](type=MCP&mcpServerId=69a838bcad273ac07ba45052) \n- Authority Score (AS), Total Traffic, and pull metric from (Traffic by Country - Country, Traffic Share) @[semrush](type=MCP&mcpServerId=69a838bcad273ac07ba45052) \n- 6-12 Month Trend, Organic Traffic, Last Post Date, and Niche from Score use @[semrush](type=MCP&mcpServerId=69a838bcad273ac07ba45052) & @[exa - Search](type=INTEGRATION&appName=exa&actionName=EXA_SEARCH) data to analysis \n\n### STEP 2: APPLY SCREENING LOGIC\n**REJECT** if ANY apply:\n- AS ≤ 20\n- Total Traffic < 1,000/month\n- Last Post > 90 days old\n- Illegal Article content detected like Casino, Drugs, Guns, Adult, Crypto, Betting etc\n- Reject Niche is not equals to: Lifestyle/Property, News, Business, Real estate, Home, home improvement, Property\n-Reject Traffic by Country is not equals to: (UK, United Kingdom, London)\n-Reject if website has AdSense or Ads banners \n- Reject Score if Bad\n\n**ACCEPT** if  ANY apply: FETCH METRICS from @[semrush](type=MCP&mcpServerId=69a838bcad273ac07ba45052) \n- Niche: Home, Home improvement, Real estate, Business, News, General.\n- Traffic by Country - Country, Traffic Share is equals to: UK, London, or England, United Kingdom (MANDATORY: Reject any other countries)\n- All other criteria pass.\nScore: Good, Moderate, Bad  \nFor Score Pull Niche: \nGood: Real estate, Home, home improvement, Property\nModerate: Lifestyle/Property, News, Business, General\nBad: Exclude all the Niche from Good & Moderate consider has bad \n\n### STEP 3: OUTPUT FORMAT @[output-table-formatter.md](type=KNOWLEDGE_SOURCE_TREE_NODE&knowledgeSourceTreeNodeId=69a91bdac9f453da9676a1f1) \nCreate a markdown table with these columns:\nUrl | Domain | Brand | AS | Total Traffic | UK Traffic | Traffic By Country | 6-12 Month Trend | Organic Traffic | Last Post Date | Niche | Illegal Content | Final Status | Status Reason | Score\n\n### CRITICAL CONSTRAINTS - READ CAREFULLY\n1. Return ONLY the markdown table.\n2. **DO NOT** generate any Python code, <function_calls>, or data download links.\n3. **DO NOT** provide any introductory or concluding text.\n4. **DO NOT** use code blocks or backticks for the table.\n5. Provide ONLY one row for each domain tested.\n\n### STEP 4: BUILD MARKDOWN TABLE Create a markdown table with exactly these columns in this order: Url | Domain | Brand | AS |  Total Traffic | UK Traffic | Traffic By Country | 6-12 Month Trend | Organic Traffic | Last Post Date | Niche | Illegal Content | Duplicate Status | Final Status |  Score | Status Reason ### STEP 5: RETURN ONLY THE TABLE Return NOTHING but the markdown table. No intro text, no explanation, no code blocks. \nUse to create table\nJust the table starting with: \n | Url | Domain | Brand | AS | Total Traffic | UK Traffic | Traffic By Country | 6-12 Month Trend | Organic Traffic | Last Post Date | Niche | Illegal Content | Duplicate Status | Final Status | Status Reason | Score |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---| Then add ONE row for each domain tested. ### EXAMPLE OUTPUT (DUPLICATE): | www.biznas.co.uk/ | biznas.co.uk | Leaders | 26.0 |  450 | 120 | UK | Declining | 450 | 2025-09-18 | Property | No | Duplicate | REJECTED | DA below 30, Last Post > 90 days, Already in portfolio | ### EXAMPLE OUTPUT (NEW - PASS): | example.com | example.com | N/A | 45 | 5000 | 2500 | UK | Healthy Growth | 5000 | 2026-02-10 | Business | No | New | ACCEPTED | All screening criteria passed | ### EXAMPLE OUTPUT (NEW - FAIL): | test.com | test.com | N/A | 28 | 800 | 200 | US | Declining | 800 | 2025-10-01 | General | No | New | REJECTED| AS below  20, Last Post > 90 days | ### CRITICAL RULES - FOLLOW EXACTLY @[semrush](type=MCP&mcpServerId=69a838bcad273ac07ba45052) (type=AGENT&agentId=69aa6af04167f95de44f5d9a) 1. Return ONLY a markdown table - nothing else 2. Do NOT add code blocks, backticks, or formatting 3. Do NOT add explanatory text before or after 4. Each domain = ONE table row 5. For duplicates: Brand from LRG, other metrics from 6. For new: All metrics from @[semrush](type=MCP&mcpServerId=69a838bcad273ac07ba45052) (type=MCP&mcpServerId=69a838bcad273ac07ba45052) 7. List ALL failed screening criteria in Status Reason 8. For duplicates: Include \"Already in portfolio\" in Status Reason 9. Use exact column order shown above 10. Format numbers as: AS =  (e.g., 26),  Traffic = number (e.g., 450)",
+        "Agent": null
+      },
+      "HumanInputNode": null,
+      "LoopNode": null,
+      "RouterNode": null,
+      "OrchestratorWorkerNode": null,
+      "EvaluatorOptimizerNode": null,
+      "GateNode": null,
+      "ChatNode": null,
+      "ArtifactNode": null,
+      "InfoNode": null,
+      "StickyNoteNode": null
+    }
+  ],
+  "Edges": [
+    {
+      "id": "69b90ae295e71f7507b9fd84",
+      "sourceNodeId": "69b90ae095e71f7507b9fd7d",
+      "targetNodeId": "69b90ae095e71f7507b9fd80"
+    },
+    {
+      "id": "69b90ae295e71f7507b9fd85",
+      "sourceNodeId": "69b90adf95e71f7507b9fd7b",
+      "targetNodeId": "69b90ae095e71f7507b9fd7d"
+    }
+  ]
+}
